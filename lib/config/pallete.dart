@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter/painting.dart';
 
 class Pallete {
   static  Color chooseUserButtonColor= HexColor("#02B290");
-  static  Color ModalBottomSheetColor= HexColor("#CAD5E2");
+ // static  Color ModalBottomSheetColor= HexColor("#CAD5E2");
   static Color BorderColor= HexColor("#343A40");
   static Color GrayTextColor= HexColor("#6D7574");
   static Color lightBlue=HexColor("#B5EAEA");
@@ -12,6 +13,7 @@ class Pallete {
   static Color DarkRed= HexColor("#FF0000");
   static Color White= HexColor("#EEEEEE");
   static Color LightGreen= HexColor("#00D84A");
+  static Color ModalBottomSheetBgColor=Colors.white;
 
  
 

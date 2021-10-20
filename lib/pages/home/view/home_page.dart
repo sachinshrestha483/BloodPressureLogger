@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mvp1/config/config.dart';
+import 'package:mvp1/config/modal_bottomsheetStyle.dart';
 
 import 'package:mvp1/config/pallete.dart';
 import 'package:mvp1/config/typography.dart';
@@ -66,6 +67,8 @@ class HomePage extends StatelessWidget {
                             print("Button Pressed");
 
                             showModalBottomSheet(
+                              shape: ModalBottomSheetStyle.modalBottomSheetShape,
+                              backgroundColor: Pallete.ModalBottomSheetBgColor,
                                 context: context,
                                 builder: (context) {
                                   return BuildForm(AddUserForm(

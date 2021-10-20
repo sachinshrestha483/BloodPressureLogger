@@ -167,47 +167,28 @@ class ReadingsPage extends StatelessWidget {
                             flex: 4,
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Pallete.lightBlue)),
-                                  onPressed: () {
-                                    var bp = BpRepository.Get(null);
-
+                              child:
+                              PrimaryButton(()=>{
                                     Navigator.of(context).pushNamed(
                                         '/newReadingPage',
-                                        arguments: bp);
-                                  },
-                                  child: Text(
-                                    "ADD",
-                                    style:
-                                        TextStyle(color: Pallete.ExtraDarkBlue),
-                                  )),
+                                        arguments: BpRepository.Get(null)),   
+                              }, "ADD")
+                              
+                              ,
                             ),
                           ),
                           Expanded(flex: 2, child: SizedBox()),
                           Expanded(
                             flex: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Pallete.lightBlue)),
-                                  onPressed: () {
-                                    Navigator.of(context).pushNamed(
-                                              '/allReadingPage',
-                                            );
-
-                                  },
-                                  child: Text(
-                                    "SEE ALL",
-                                    style:
-                                        TextStyle(color: Pallete.ExtraDarkBlue),
-                                  )),
-                            ),
+                            child: 
+                            
+                            PrimaryButton((){
+                                  Navigator.of(context).pushNamed(
+                                            '/allReadingPage',
+                                          );
+                            }, "SEE ALL")
+                            
+                           
                           )
                         ],
                       )

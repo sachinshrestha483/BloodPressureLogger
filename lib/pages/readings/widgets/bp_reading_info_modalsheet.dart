@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mvp1/config/config.dart';
+import 'package:mvp1/config/modal_bottomsheetStyle.dart';
 import 'package:mvp1/config/typography.dart';
 import 'package:mvp1/domain/bp_repository/src/bp_repository.dart';
 import 'package:mvp1/domain/bp_repository/src/models/models.dart';
@@ -9,10 +10,8 @@ import 'package:mvp1/widgets/widgets.dart';
 
 Future<void> ShowBpInfoBottomModalSheet(BuildContext context, Bp bp) {
   return showModalBottomSheet<void>(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24), topRight: Radius.circular(24))),
-      backgroundColor: Colors.white,
+      shape: ModalBottomSheetStyle.modalBottomSheetShape,
+      backgroundColor: Pallete.ModalBottomSheetBgColor,
       context: context,
       builder: (BuildContext context) {
         return Padding(
@@ -104,42 +103,23 @@ Future<void> ShowBpInfoBottomModalSheet(BuildContext context, Bp bp) {
                       children: [
                         Expanded(
                           flex: 4,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Pallete.lightBlue)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  "Close",
-                                  style:
-                                      TextStyle(color: Pallete.ExtraDarkBlue),
-                                )),
-                          ),
+                          child:
+                          PrimaryButton(()=>{
+                                  Navigator.pop(context)
+
+                          }, "Close")
                         ),
                         Expanded(flex: 2, child: SizedBox()),
                         Expanded(
                           flex: 4,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Pallete.LightRed)),
-                                onPressed: () {
-                                  BpRepository.Remove(bp.key);
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  "Delete",
-                                  style: TextStyle(color: Pallete.White),
-                                )),
-                          ),
+                          child: 
+                          DangerButton(()=>{
+                             BpRepository.Remove(bp.key),
+                                  Navigator.pop(context),
+
+                          }, "Delete")
+                          
+                         
                         )
                       ],
                     ),

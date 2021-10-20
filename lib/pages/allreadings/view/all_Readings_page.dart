@@ -3,12 +3,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mvp1/config/config.dart';
+import 'package:mvp1/config/typography.dart';
 import 'package:mvp1/domain/bp_repository/src/bp_repository.dart';
 import 'package:mvp1/domain/bp_repository/src/models/models.dart';
 import 'package:mvp1/pages/readings/readings.dart';
 import 'package:mvp1/providers/userProvider.dart';
+import 'package:mvp1/widgets/buttons.dart';
 import 'package:mvp1/widgets/userspecificappbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mvp1/widgets/widgets.dart';
 
 class AllReadingsPage extends StatelessWidget {
   const AllReadingsPage({Key? key}) : super(key: key);
@@ -17,23 +20,32 @@ class AllReadingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UserSpecificAppBar("Readings", context),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Pallete.LightGreen,
+        onPressed: () {
+          var bp = BpRepository.Get(null);
+
+          Navigator.of(context).pushNamed('/newReadingPage', arguments: bp);
+        },
+        child: Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
-            
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                BuildSafeText("Bp", AppTypography.PrimaryHeading),
                 Consumer(builder: (context, watch, child) {
-                final selectedProfileId = watch(selectedProfileProvider).state;
+                  final selectedProfileId =
+                      watch(selectedProfileProvider).state;
 
                   return ValueListenableBuilder<Box<Bp>>(
                       valueListenable: BpRepository.GetBox().listenable(),
                       builder: (context, box, _) {
                         return Text(
-                          "Bp (${BpRepository.GetBox().values.where((element) => element.userId==selectedProfileId).toList().length}) ",
-                          style: AppTypography.PrimaryHeading,
+                          " (${BpRepository.GetBox().values.where((element) => element.userId == selectedProfileId).toList().length}) ",
+                          style: AppTypography.PrimaryText,
                           textAlign: TextAlign.left,
                         );
                       });
@@ -99,8 +111,7 @@ class AllReadingsPage extends StatelessWidget {
                                                                 .GetBpStatusColor(
                                                                     BpRepository
                                                                         .GetBpStatus(
-                                                                            readings[
-                                                                                index])),
+                                                                            readings[index])),
                                                             fontSize: 22),
                                                       ),
                                                     ],
@@ -152,46 +163,6 @@ class AllReadingsPage extends StatelessWidget {
                 );
               },
             ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Pallete.lightBlue)),
-                        onPressed: () {
-                          var bp = BpRepository.Get(null);
-
-                          Navigator.of(context)
-                              .pushNamed('/newReadingPage', arguments: bp);
-                        },
-                        child: Text(
-                          "ADD",
-                          style: TextStyle(color: Pallete.ExtraDarkBlue),
-                        )),
-                  ),
-                ),
-                Expanded(flex: 2, child: SizedBox()),
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Pallete.lightBlue)),
-                        onPressed: () {},
-                        child: Text(
-                          "SEE ALL",
-                          style: TextStyle(color: Pallete.ExtraDarkBlue),
-                        )),
-                  ),
-                )
-              ],
-            )
           ],
         ),
       ),
