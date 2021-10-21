@@ -184,7 +184,7 @@ class ReadingsPage extends StatelessWidget {
                             
                             PrimaryButton((){
                                   Navigator.of(context).pushNamed(
-                                            '/allReadingPage',
+                                            '/analysisPage',
                                           );
                             }, "SEE ALL")
                             

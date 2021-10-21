@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mvp1/pages/allreadings/allreadings.dart';
+import 'package:mvp1/pages/analysis/view/analysis_page.dart';
 import 'package:mvp1/pages/home/home.dart';
 import 'package:mvp1/pages/readings/readings.dart';
 
@@ -33,6 +34,11 @@ class RouteGenerator {
           return MaterialPageRoute(
               builder: (_) => AllReadingsPage(
                   ));
+
+         case '/analysisPage':
+          return MaterialPageRoute(
+              builder: (_) => AnalysisPage(
+                  ));          
         
 
 

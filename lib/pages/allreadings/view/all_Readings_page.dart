@@ -6,20 +6,30 @@ import 'package:mvp1/config/config.dart';
 import 'package:mvp1/config/typography.dart';
 import 'package:mvp1/domain/bp_repository/src/bp_repository.dart';
 import 'package:mvp1/domain/bp_repository/src/models/models.dart';
+import 'package:mvp1/pages/charts/view/charts_page.dart';
 import 'package:mvp1/pages/readings/readings.dart';
+import 'package:mvp1/pages/statistics/view/statistics_page.dart';
 import 'package:mvp1/providers/userProvider.dart';
 import 'package:mvp1/widgets/buttons.dart';
 import 'package:mvp1/widgets/userspecificappbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mvp1/widgets/widgets.dart';
 
-class AllReadingsPage extends StatelessWidget {
+class AllReadingsPage extends StatefulWidget {
   const AllReadingsPage({Key? key}) : super(key: key);
 
   @override
+  State<AllReadingsPage> createState() => _AllReadingsPageState();
+}
+
+class _AllReadingsPageState extends State<AllReadingsPage> {
+
+  
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UserSpecificAppBar("Readings", context),
+      appBar: UserSpecificAppBar("All Readings", context),
+  
       floatingActionButton: FloatingActionButton(
         backgroundColor: Pallete.LightGreen,
         onPressed: () {
