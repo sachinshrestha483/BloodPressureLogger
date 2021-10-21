@@ -14,6 +14,13 @@ class AppTypography {
 
     static TextStyle PrimaryText = TextStyle(
       fontSize: 18, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);    
+      static TextStyle SecondaryText = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);    
+
+
+      static TextStyle PrimaryHeadingThin = TextStyle(
+      fontSize: 35, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);
+
 
 
 }

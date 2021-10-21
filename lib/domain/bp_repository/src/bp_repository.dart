@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mvp1/Utility/Uid.dart';
+import 'package:mvp1/Utility/dateTimeHelpers.dart';
 import 'package:mvp1/config/config.dart';
 import 'package:mvp1/domain/bp_repository/src/StandardBpUnits.dart';
+import 'package:mvp1/domain/bp_repository/src/models/averagebp_model.dart';
 import 'package:mvp1/domain/bp_repository/src/models/bp_info.dart';
+import 'package:mvp1/domain/reporting/enums/TimeRangeOfDay.dart';
+import 'package:mvp1/domain/reporting/enums/days.dart';
+import 'package:mvp1/domain/reporting/enums/enumHelper.dart';
 import 'package:mvp1/providers/Boxes.dart';
 
 import 'enums/bp_status.dart';
@@ -25,8 +31,152 @@ class BpRepository {
     bpBox.delete(key);
   }
 
+  static AverageBp? GetAverageBp(Days days, TimeRangeOfDay timeRangeOfDay,
+      DateTimeRange? dateRange, List<Bp> readings) {
+    if (days == Days.custom) {
+      if (dateRange == null) {
+        return null;
+      }
 
-static String GetBpStatusDisplayString(BpStatus bpStatus){
+      var filteredReadings = readings
+          .map((e) {
+            e.readingDateTime =
+                DateTimeHelpers.convertToMidnightDate(e.readingDateTime);
+
+            return e;
+          })
+          .toList()
+          .where((element) =>
+              (element.readingDateTime.isAfter(
+                          DateTimeHelpers.convertToMidnightDate(
+                              dateRange.start)) ||
+                      DateTimeHelpers.convertToMidnightDate(dateRange.start)
+                          .isAtSameMomentAs(element.readingDateTime)) &&
+                  element.readingDateTime.isBefore(
+                      DateTimeHelpers.convertToMidnightDate(dateRange.end)) ||
+              DateTimeHelpers.convertToMidnightDate(dateRange.start)
+                  .isAtSameMomentAs(element.readingDateTime));
+
+      if (filteredReadings.length == 0) {
+        return null;
+      }
+
+      var avgSystolic = filteredReadings
+              .map((e) => e.systolic)
+              .toList()
+              .reduce((value, element) => value + element) /
+          filteredReadings.length;
+      var avglDiastolic = filteredReadings
+              .map((e) => e.diastolic)
+              .toList()
+              .reduce((value, element) => value + element) /
+          filteredReadings.length;
+      var avgPulse = filteredReadings
+              .map((e) => e.pulse)
+              .toList()
+              .reduce((value, element) => value + element) /
+          filteredReadings.length;
+      var averageBp = new AverageBp();
+      averageBp.AverageSystolic = avgSystolic.toInt();
+      averageBp.AverageDiastolic = avglDiastolic.toInt();
+      averageBp.AveragePulse = avgPulse.toInt();
+      averageBp.TotalReadings = filteredReadings.length;
+      averageBp.NumberOfDays =
+          DateTimeHelpers.GetDaysBetween(dateRange.start, dateRange.end);
+
+      return averageBp;
+    } else {
+      var numberofDatesTillNow = DaysEnumHelper.GetNumberOfDays(days);
+      var filteredReadings = <Bp>[];
+      if (numberofDatesTillNow == null) {
+        if (days == Days.All_time) {
+          numberofDatesTillNow = readings.map((e) => DateTimeHelpers.convertToMidnightDate(e.readingDateTime)).toSet().toList().length;
+          filteredReadings = readings;
+        } else {
+          return null;
+        }
+      } else {
+        filteredReadings = readings
+            .where((element) =>
+                DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
+                    .isAfter(
+                        DateTimeHelpers.convertToMidnightDate(DateTime.now())
+                            .subtract(Duration(days: numberofDatesTillNow!))) &&
+                DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
+                    .isBefore(DateTime.now()))
+            .toList();
+      }
+
+      if (filteredReadings.length == 0) {
+        return null;
+      }
+
+// Filter For The Time Range Of day
+
+      if (timeRangeOfDay == TimeRangeOfDay.AM) {
+        filteredReadings = filteredReadings
+            .where((element) =>
+                DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
+                DayPeriod.am)
+            .toList();
+      } else if (timeRangeOfDay == TimeRangeOfDay.PM) {
+        filteredReadings = filteredReadings
+            .where((element) =>
+                DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
+                DayPeriod.pm)
+            .toList();
+      } else if (timeRangeOfDay == TimeRangeOfDay.Evening) {
+        filteredReadings = filteredReadings
+            .where((element) =>
+                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
+                TimeRangeOfDay.Evening)
+            .toList();
+      } else if (timeRangeOfDay == TimeRangeOfDay.Morning) {
+        filteredReadings = filteredReadings
+            .where((element) =>
+                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
+                TimeRangeOfDay.Morning)
+            .toList();
+      } else if (timeRangeOfDay == TimeRangeOfDay.Day) {
+        filteredReadings = filteredReadings
+            .where((element) =>
+                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
+                TimeRangeOfDay.Day)
+            .toList();
+      }
+ if(filteredReadings.length==0){
+   return null;
+ }     
+
+
+      var avgSystolic = filteredReadings
+              .map((e) => e.systolic)
+              .toList()
+              .reduce((value, element) => value + element) /
+          filteredReadings.length;
+      var avglDiastolic = filteredReadings
+              .map((e) => e.diastolic)
+              .toList()
+              .reduce((value, element) => value + element) /
+          filteredReadings.length;
+      var avgPulse = filteredReadings
+              .map((e) => e.pulse)
+              .toList()
+              .reduce((value, element) => value + element) /
+          filteredReadings.length;
+
+      var averageBp = new AverageBp();
+      averageBp.AverageSystolic = avgSystolic.toInt();
+      averageBp.AverageDiastolic = avglDiastolic.toInt();
+      averageBp.AveragePulse = avgPulse.toInt();
+      averageBp.TotalReadings = filteredReadings.length;
+      averageBp.NumberOfDays = numberofDatesTillNow;
+      return averageBp;
+    }
+
+  }
+
+  static String GetBpStatusDisplayString(BpStatus bpStatus) {
     switch (bpStatus) {
       case BpStatus.LowPulse:
         return 'Low';
@@ -34,28 +184,26 @@ static String GetBpStatusDisplayString(BpStatus bpStatus){
         return 'Normal';
       case BpStatus.HighPulse:
         return 'High';
-         case BpStatus.Very_Low:
+      case BpStatus.Very_Low:
         return 'Very Low';
-         case BpStatus.Low:
-        return 'Low'; 
-        case BpStatus.High:
+      case BpStatus.Low:
+        return 'Low';
+      case BpStatus.High:
         return 'High';
-        case BpStatus.Very_High:
+      case BpStatus.Very_High:
         return 'Very High';
-        case BpStatus.Normal:
+      case BpStatus.Normal:
         return 'Normal';
-     
+
       default:
         return "";
     }
-}
+  }
 
-
-
-static Color GetBpStatusColor(BpStatus bpStatus){
+  static Color GetBpStatusColor(BpStatus bpStatus) {
     switch (bpStatus) {
       case BpStatus.LowPulse:
-        return  Pallete.LightRed;
+        return Pallete.LightRed;
 
       case BpStatus.Normal_Pulse:
         return Pallete.LightGreen;
@@ -65,26 +213,23 @@ static Color GetBpStatusColor(BpStatus bpStatus){
 
       case BpStatus.Very_Low:
         return Pallete.DarkRed;
-         
+
       case BpStatus.Low:
-        return Pallete.LightRed; 
-      
+        return Pallete.LightRed;
+
       case BpStatus.High:
-        return  Pallete.LightRed;
-      
+        return Pallete.LightRed;
+
       case BpStatus.Very_High:
         return Pallete.DarkRed;
-      
+
       case BpStatus.Normal:
         return Pallete.LightGreen;
-     
+
       default:
         return Pallete.LightGreen;
     }
-}
-
-
-
+  }
 
   static Bp Get(String? id) {
     if (id == null) {
@@ -108,12 +253,9 @@ static Color GetBpStatusColor(BpStatus bpStatus){
   static BpStatus GetPulseStatus(Bp bp) {
     if (_isHighPulse(bp)) {
       return BpStatus.HighPulse;
-    }
-    else if(_isLowPulse(bp)){
+    } else if (_isLowPulse(bp)) {
       return BpStatus.LowPulse;
-
-    }
-     else {
+    } else {
       return BpStatus.Normal_Pulse;
     }
   }
@@ -133,8 +275,6 @@ static Color GetBpStatusColor(BpStatus bpStatus){
       return BpStatus.Normal;
     }
   }
-
-
 
   static bool _isHighBp(Bp bp) {
     var isHigh = bp.systolic > StandardBpReading.MaximumSystolic ||
@@ -171,9 +311,6 @@ static Color GetBpStatusColor(BpStatus bpStatus){
     var isLowPulse = bp.pulse < StandardBpReading.MinPulse;
     return isLowPulse;
   }
-
-
-
 
   static String _getPulseInfoMessage(BpStatus bpStatus) {
     String message = "Normal";

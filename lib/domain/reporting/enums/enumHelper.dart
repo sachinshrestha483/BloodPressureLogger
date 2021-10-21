@@ -38,4 +38,27 @@ class DaysEnumHelper {
         return "Three Months";
     }
   }
+
+  static int?  GetNumberOfDays(Days days){
+
+switch (days) {
+      case Days.All_time:
+        return  null;
+      case Days.custom:
+        return null;
+      case Days.one_month:
+        return 30;
+      case Days.one_year:
+        return 365;
+      case Days.six_months:
+        return 180;
+      case Days.three_months:
+        return 90;
+    }
+
+  }
+
+
+
+
 }
