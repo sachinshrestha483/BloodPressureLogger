@@ -90,7 +90,12 @@ class BpRepository {
       var filteredReadings = <Bp>[];
       if (numberofDatesTillNow == null) {
         if (days == Days.All_time) {
-          numberofDatesTillNow = readings.map((e) => DateTimeHelpers.convertToMidnightDate(e.readingDateTime)).toSet().toList().length;
+          numberofDatesTillNow = readings
+              .map((e) =>
+                  DateTimeHelpers.convertToMidnightDate(e.readingDateTime))
+              .toSet()
+              .toList()
+              .length;
           filteredReadings = readings;
         } else {
           return null;
@@ -98,12 +103,13 @@ class BpRepository {
       } else {
         filteredReadings = readings
             .where((element) =>
-                DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
-                    .isAfter(
-                        DateTimeHelpers.convertToMidnightDate(DateTime.now())
-                            .subtract(Duration(days: numberofDatesTillNow!))) &&
-                DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
-                    .isBefore(DateTime.now()))
+                (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
+                .isAfter(DateTimeHelpers.convertToMidnightDate(DateTime.now()).subtract(Duration(days: numberofDatesTillNow!)))
+                 || DateTimeHelpers.convertToMidnightDate(DateTime.now()).isAtSameMomentAs(element.readingDateTime))
+                              &&
+                (DateTimeHelpers.convertToMidnightDate(element.readingDateTime).isBefore(DateTime.now()) 
+                ||
+                DateTimeHelpers.convertToMidnightDate(DateTime.now()).isAtSameMomentAs(element.readingDateTime)))
             .toList();
       }
 
@@ -144,10 +150,9 @@ class BpRepository {
                 TimeRangeOfDay.Day)
             .toList();
       }
- if(filteredReadings.length==0){
-   return null;
- }     
-
+      if (filteredReadings.length == 0) {
+        return null;
+      }
 
       var avgSystolic = filteredReadings
               .map((e) => e.systolic)
@@ -173,7 +178,6 @@ class BpRepository {
       averageBp.NumberOfDays = numberofDatesTillNow;
       return averageBp;
     }
-
   }
 
   static String GetBpStatusDisplayString(BpStatus bpStatus) {
