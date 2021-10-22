@@ -42,6 +42,10 @@ return TimeRangeOfDay.Evening;
 
 }
 
+static String GetShortDate(DateTime date){
+return "${date.day}/${date.month}/${date.year}";
+}
+
 
 
 

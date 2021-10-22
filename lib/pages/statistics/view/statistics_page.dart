@@ -9,6 +9,8 @@ import 'package:mvp1/domain/bp_repository/src/models/models.dart';
 import 'package:mvp1/domain/reporting/enums/TimeRangeOfDay.dart';
 import 'package:mvp1/domain/reporting/enums/days.dart';
 import 'package:mvp1/pages/analysis/widgets/noReadings.dart';
+import 'package:mvp1/pages/statistics/widgets/averageHeading.dart';
+import 'package:mvp1/pages/statistics/widgets/averageTable.dart';
 import 'package:mvp1/providers/userProvider.dart';
 import 'package:mvp1/widgets/filters.dart';
 import 'package:mvp1/widgets/safetext.dart';
@@ -57,87 +59,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
             padding: const EdgeInsets.all(18.0),
             child: Column(
               children: [
-                Consumer(builder: (context, watch, child) {
-                  final selectedProfileId =
-                      watch(selectedProfileProvider).state;
-
-                  return ValueListenableBuilder<Box<Bp>>(
-                    valueListenable: BpRepository.GetBox().listenable(),
-                    builder: (context, box, _) {
-                      final readings = box.values
-                          .toList()
-                          .cast<Bp>()
-                          .where(
-                              (element) => element.userId == selectedProfileId)
-                          .toList();
-                      if (readings.length == 0) {
-                        return Text("No Readings Found", style: AppTypography.PrimaryText,);
-                      }
-                      var averageBp = BpRepository.GetAverageBp(
-                          days, dayTimeRange, dateRange, readings);
-
-                      // if (averageBp == null) {
-                      //   return Column(
-                      //     children: [
-                      //       NoReadings(),
-                      //     ],
-                      //   );
-                      // }
-
-                      return !(readings.length==0 || averageBp==null)? Column(
-                        children: [
-                          Row(
-                            children: [
-                              BuildSafeText(
-                                  "Average Blood Pressure (${averageBp.NumberOfDays} days)",
-                                  AppTypography.SecondaryText),
-                              // ("Average Blood Pressure (30 days)", textAlign: TextAlign.left,),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              
-                              Flexible(
-                                flex: 3,
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: [
-                                    BuildSafeText(
-                                        '${averageBp.AverageSystolic}/${averageBp.AverageDiastolic}',
-                                        AppTypography.PrimaryHeadingThin),
-                                    BuildSafeText(
-                                        " mmHg", AppTypography.SecondaryText)
-                                  ],
-                                ),
-                              ),
-                              Flexible(
-                                  flex: 1,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.circle,
-                                        color: Pallete.LightGreen,
-                                      ),
-                                      BuildSafeText(
-                                          "  Normal", AppTypography.PrimaryText)
-                                    ],
-                                  ))
-                            ],
-                          ),
-                          // Text(
-
-                          //     "Avg Systolic - ${averageBp.AverageSystolic} \n  Avg Diastolic - ${averageBp.AverageDiastolic}  \n   Avg Pulse  - ${averageBp.AveragePulse}  \n    Avg Days  - ${averageBp.TotalReadings} "
-                          //     ),
-                        ],
-                      ):Text("No Readings Found", style: AppTypography.PrimaryText,);
-                    },
-                  );
-                }),
+                BuildAverageHeading(dateRange, days, dayTimeRange)
               ],
             ),
-          )
+          ),
+          Expanded(child: BuildAverageTable(dateRange, days, dayTimeRange)),
         ],
       ),
     );

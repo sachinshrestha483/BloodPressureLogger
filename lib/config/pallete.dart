@@ -14,6 +14,7 @@ class Pallete {
   static Color White= HexColor("#EEEEEE");
   static Color LightGreen= HexColor("#00D84A");
   static Color ModalBottomSheetBgColor=Colors.white;
+  static Color Darkblack=Colors.black;
 
  
 

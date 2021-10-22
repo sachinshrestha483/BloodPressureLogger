@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mvp1/config/config.dart';
 
@@ -19,8 +20,18 @@ class AppTypography {
 
 
       static TextStyle PrimaryHeadingThin = TextStyle(
-      fontSize: 35, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);
+      fontSize: 30, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);
 
+      
+      static TextStyle TableHeading = TextStyle(
+      fontSize: 12, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);
+
+      static TextStyle TableBody = TextStyle(
+      fontSize: 20, fontWeight: FontWeight.normal, color: Pallete.GrayTextColor);
+
+
+      static TextStyle TableInfo = TextStyle(
+      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[800]);
 
 
 }
