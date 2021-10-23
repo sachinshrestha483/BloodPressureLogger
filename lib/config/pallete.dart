@@ -16,6 +16,17 @@ class Pallete {
   static Color ModalBottomSheetBgColor=Colors.white;
   static Color Darkblack=Colors.black;
 
+static Color PieChartHypoTension= HexColor("#7b2cbf");
+  static Color PieChartNormal= HexColor("#3dfc60");
+  static Color PieChartStage1= HexColor("#f6aa1c");
+  static Color PieChartStage2= HexColor("#d7263d");
+  static Color PieChartStage3= HexColor("#d90429");
+
+
+
+
+
+
  
 
 

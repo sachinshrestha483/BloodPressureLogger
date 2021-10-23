@@ -15,7 +15,9 @@ import 'package:mvp1/domain/reporting/enums/days.dart';
 import 'package:mvp1/domain/reporting/enums/enumHelper.dart';
 import 'package:mvp1/providers/Boxes.dart';
 
+import 'enums/bp_category.dart';
 import 'enums/bp_status.dart';
+import 'models/bp_chartmodel.dart';
 import 'models/bp_model.dart';
 
 class BpRepository {
@@ -34,6 +36,173 @@ class BpRepository {
     bpBox.delete(key);
   }
 
+  static BpChartData? GetBpChart(Days days, TimeRangeOfDay timeRangeOfDay,
+      DateTimeRange? dateRange, List<Bp> readings) {
+    if (days == Days.custom) {
+      if (dateRange == null) {
+        return null;
+      }
+      var filteredReadings = FilterWithCustomDates(dateRange, readings);
+      if (filteredReadings.length == 0) {
+        return null;
+      }
+      var normalReadings = <Bp>[];
+      var stage1Hypertensions = <Bp>[];
+      var stage2HyperTensions = <Bp>[];
+      var stage3HyperTensions = <Bp>[];
+      var hypotensions = <Bp>[];
+
+      for (var i = 0; i < filteredReadings.length; i++) {
+        var reading = filteredReadings[i];
+
+        if (GetBpCategoty(reading) == BpCategory.Hypotension) {
+          hypotensions.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Normal) {
+          normalReadings.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Stage1HyperTension) {
+          stage1Hypertensions.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Stage2HyperTension) {
+          stage2HyperTensions.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Stage3HyperTension) {
+          stage3HyperTensions.add(reading);
+        }
+      }
+
+      var bpChartData = new BpChartData();
+      bpChartData.numberOfDays =
+          DateTimeHelpers.GetDaysBetween(dateRange.start, dateRange.end);
+      bpChartData.totalReadings = filteredReadings.length;
+
+      bpChartData.startDate = dateRange.start;
+      bpChartData.enddate = dateRange.end;
+      bpChartData.hypotensionReadingCount = hypotensions.length;
+
+      bpChartData.normalReadingCount = normalReadings.length;
+      bpChartData.normalReadingPercentage =
+          (normalReadings.length / filteredReadings.length) * 100;
+
+      bpChartData.stage1hypertensionReadingCount = stage1Hypertensions.length;
+      bpChartData.stage1HypertensionReadingPercentage =
+          (stage1Hypertensions.length / filteredReadings.length) * 100;
+
+      bpChartData.stage2hypertensionReadingCount = stage2HyperTensions.length;
+      bpChartData.stage2HypertensionReadingPercentage =
+          (stage2HyperTensions.length / filteredReadings.length) * 100;
+
+      bpChartData.stage2hypertensionReadingCount = stage2HyperTensions.length;
+      bpChartData.stage3HypertensionReadingPercentage =
+          (stage3HyperTensions.length / filteredReadings.length) * 100;
+
+      bpChartData.hypotensionReadingCount = hypotensions.length;
+      bpChartData.HypotensionPercentage =
+          (hypotensions.length / filteredReadings.length) * 100;
+
+      return bpChartData;
+    } else {
+      var numberofDatesTillNow = DaysEnumHelper.GetNumberOfDays(days);
+      var filteredReadings = <Bp>[];
+      if (numberofDatesTillNow == null) {
+        if (days == Days.All_time) {
+          numberofDatesTillNow = GetNumberofDaysfromFirstReading(readings);
+          filteredReadings = readings;
+        } else {
+          return null;
+        }
+      } else {
+        filteredReadings =
+            FilterForSpecificDays(readings, numberofDatesTillNow);
+      }
+
+      if (filteredReadings.length == 0) {
+        return null;
+      }
+
+// Filter For The Time Range Of day
+      filteredReadings =
+          FilterForTimeRangeOfDay(filteredReadings, timeRangeOfDay);
+
+      if (filteredReadings.length == 0) {
+        return null;
+      }
+
+      var normalReadings = <Bp>[];
+      var stage1Hypertensions = <Bp>[];
+      var stage2HyperTensions = <Bp>[];
+      var stage3HyperTensions = <Bp>[];
+      var hypotensions = <Bp>[];
+
+      for (var i = 0; i < filteredReadings.length; i++) {
+        var reading = filteredReadings[i];
+
+        if (GetBpCategoty(reading) == BpCategory.Hypotension) {
+          hypotensions.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Normal) {
+          normalReadings.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Stage1HyperTension) {
+          stage1Hypertensions.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Stage2HyperTension) {
+          stage2HyperTensions.add(reading);
+        } else if (GetBpCategoty(reading) == BpCategory.Stage3HyperTension) {
+          stage3HyperTensions.add(reading);
+        }
+      }
+
+      var bpChartData = new BpChartData();
+      bpChartData.numberOfDays = numberofDatesTillNow;
+      bpChartData.totalReadings = filteredReadings.length;
+
+      bpChartData.startDate =
+          DateTime.now().subtract(Duration(days: numberofDatesTillNow));
+      bpChartData.enddate = DateTime.now();
+
+      bpChartData.hypotensionReadingCount = hypotensions.length;
+
+      bpChartData.normalReadingCount = normalReadings.length;
+      bpChartData.normalReadingPercentage =
+          (normalReadings.length / filteredReadings.length) * 100;
+
+      bpChartData.stage1hypertensionReadingCount = stage1Hypertensions.length;
+      bpChartData.stage1HypertensionReadingPercentage =
+          (stage1Hypertensions.length / filteredReadings.length) * 100;
+
+      bpChartData.stage2hypertensionReadingCount = stage2HyperTensions.length;
+      bpChartData.stage2HypertensionReadingPercentage =
+          (stage2HyperTensions.length / filteredReadings.length) * 100;
+
+      bpChartData.stage3hypertensionReadingCount = stage3HyperTensions.length;
+      bpChartData.stage3HypertensionReadingPercentage =
+          (stage3HyperTensions.length / filteredReadings.length) * 100;
+
+      bpChartData.hypotensionReadingCount = hypotensions.length;
+      bpChartData.HypotensionPercentage =
+          (hypotensions.length / filteredReadings.length) * 100;
+
+      return bpChartData;
+    }
+  }
+
+  static BpCategory GetBpCategoty(Bp bp) {
+    if ((bp.systolic >= 130 && bp.systolic <= 139) ||
+        (bp.diastolic >= 80 && bp.diastolic <= 89)) {
+      return BpCategory.Stage1HyperTension;
+    }
+
+    if ((bp.systolic >= 140 && bp.systolic <= 179) ||
+        (bp.diastolic >= 90 && bp.diastolic <= 119)) {
+      return BpCategory.Stage2HyperTension;
+    }
+
+    if ((bp.systolic >= 180) || bp.diastolic >= 120) {
+      return BpCategory.Stage3HyperTension;
+    }
+
+    if (bp.systolic <= 90 || bp.diastolic <= 60) {
+      return BpCategory.Hypotension;
+    }
+
+    return BpCategory.Normal;
+  }
+
   static AverageBp? GetAverageBp(Days days, TimeRangeOfDay timeRangeOfDay,
       DateTimeRange? dateRange, List<Bp> readings) {
     if (days == Days.custom) {
@@ -41,24 +210,7 @@ class BpRepository {
         return null;
       }
 
-      var filteredReadings = readings
-          .map((e) {
-            e.readingDateTime =
-                DateTimeHelpers.convertToMidnightDate(e.readingDateTime);
-
-            return e;
-          })
-          .toList()
-          .where((element) =>
-              (element.readingDateTime.isAfter(
-                          DateTimeHelpers.convertToMidnightDate(
-                              dateRange.start)) ||
-                      DateTimeHelpers.convertToMidnightDate(dateRange.start)
-                          .isAtSameMomentAs(element.readingDateTime)) &&
-                  element.readingDateTime.isBefore(
-                      DateTimeHelpers.convertToMidnightDate(dateRange.end)) ||
-              DateTimeHelpers.convertToMidnightDate(dateRange.start)
-                  .isAtSameMomentAs(element.readingDateTime));
+      var filteredReadings = FilterWithCustomDates(dateRange, readings);
 
       if (filteredReadings.length == 0) {
         return null;
@@ -93,30 +245,14 @@ class BpRepository {
       var filteredReadings = <Bp>[];
       if (numberofDatesTillNow == null) {
         if (days == Days.All_time) {
-          numberofDatesTillNow = readings
-              .map((e) =>
-                  DateTimeHelpers.convertToMidnightDate(e.readingDateTime))
-              .toSet()
-              .toList()
-              .length;
+          numberofDatesTillNow = GetNumberofDaysfromFirstReading(readings);
           filteredReadings = readings;
         } else {
           return null;
         }
       } else {
-        filteredReadings = readings
-            .where((element) =>
-                (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
-                        .isAfter(DateTimeHelpers.convertToMidnightDate(
-                                DateTime.now())
-                            .subtract(Duration(days: numberofDatesTillNow!))) ||
-                    DateTimeHelpers.convertToMidnightDate(DateTime.now())
-                        .isAtSameMomentAs(element.readingDateTime)) &&
-                (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
-                        .isBefore(DateTime.now()) ||
-                    DateTimeHelpers.convertToMidnightDate(DateTime.now())
-                        .isAtSameMomentAs(element.readingDateTime)))
-            .toList();
+        filteredReadings =
+            FilterForSpecificDays(readings, numberofDatesTillNow);
       }
 
       if (filteredReadings.length == 0) {
@@ -124,38 +260,9 @@ class BpRepository {
       }
 
 // Filter For The Time Range Of day
+      filteredReadings =
+          FilterForTimeRangeOfDay(filteredReadings, timeRangeOfDay);
 
-      if (timeRangeOfDay == TimeRangeOfDay.AM) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
-                DayPeriod.am)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.PM) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
-                DayPeriod.pm)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.Evening) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
-                TimeRangeOfDay.Evening)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.Morning) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
-                TimeRangeOfDay.Morning)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.Day) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
-                TimeRangeOfDay.Day)
-            .toList();
-      }
       if (filteredReadings.length == 0) {
         return null;
       }
@@ -186,6 +293,100 @@ class BpRepository {
     }
   }
 
+  static List<Bp> FilterWithCustomDates(
+      DateTimeRange? dateRange, List<Bp> readings) {
+    var filteredReadings = <Bp>[];
+
+    if (dateRange == null) {
+      return filteredReadings;
+    }
+
+    filteredReadings = readings
+        .map((e) {
+          e.readingDateTime =
+              DateTimeHelpers.convertToMidnightDate(e.readingDateTime);
+          return e;
+        })
+        .toList()
+        .where((element) =>
+            (element.readingDateTime.isAfter(
+                        DateTimeHelpers.convertToMidnightDate(
+                            dateRange.start)) ||
+                    DateTimeHelpers.convertToMidnightDate(dateRange.start)
+                        .isAtSameMomentAs(element.readingDateTime)) &&
+                element.readingDateTime.isBefore(
+                    DateTimeHelpers.convertToMidnightDate(dateRange.end)) ||
+            DateTimeHelpers.convertToMidnightDate(dateRange.start)
+                .isAtSameMomentAs(element.readingDateTime))
+        .toList();
+
+    return filteredReadings;
+  }
+
+  static int GetNumberofDaysfromFirstReading(List<Bp> readings) {
+    return readings
+        .map((e) => DateTimeHelpers.convertToMidnightDate(e.readingDateTime))
+        .toSet()
+        .toList()
+        .length;
+  }
+
+  static List<Bp> FilterForSpecificDays(
+      List<Bp> readings, int numberofDatesTillNow) {
+    var filteredReadings = <Bp>[];
+    filteredReadings = readings
+        .where((element) =>
+            (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
+                    .isAfter(
+                        DateTimeHelpers.convertToMidnightDate(DateTime.now())
+                            .subtract(Duration(days: numberofDatesTillNow))) ||
+                DateTimeHelpers.convertToMidnightDate(DateTime.now())
+                    .isAtSameMomentAs(element.readingDateTime)) &&
+            (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
+                    .isBefore(DateTime.now()) ||
+                DateTimeHelpers.convertToMidnightDate(DateTime.now())
+                    .isAtSameMomentAs(element.readingDateTime)))
+        .toList();
+
+    return filteredReadings;
+  }
+
+  static List<Bp> FilterForTimeRangeOfDay(
+      List<Bp> filteredReadings, TimeRangeOfDay timeRangeOfDay) {
+    if (timeRangeOfDay == TimeRangeOfDay.AM) {
+      filteredReadings = filteredReadings
+          .where((element) =>
+              DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
+              DayPeriod.am)
+          .toList();
+    } else if (timeRangeOfDay == TimeRangeOfDay.PM) {
+      filteredReadings = filteredReadings
+          .where((element) =>
+              DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
+              DayPeriod.pm)
+          .toList();
+    } else if (timeRangeOfDay == TimeRangeOfDay.Evening) {
+      filteredReadings = filteredReadings
+          .where((element) =>
+              DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
+              TimeRangeOfDay.Evening)
+          .toList();
+    } else if (timeRangeOfDay == TimeRangeOfDay.Morning) {
+      filteredReadings = filteredReadings
+          .where((element) =>
+              DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
+              TimeRangeOfDay.Morning)
+          .toList();
+    } else if (timeRangeOfDay == TimeRangeOfDay.Day) {
+      filteredReadings = filteredReadings
+          .where((element) =>
+              DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
+              TimeRangeOfDay.Day)
+          .toList();
+    }
+    return filteredReadings;
+  }
+
   static MinMaxAverageBpReading? getMinMaxAverageBpReadings(
       Days days,
       TimeRangeOfDay timeRangeOfDay,
@@ -196,24 +397,7 @@ class BpRepository {
         return null;
       }
 
-      var filteredReadings = readings
-          .map((e) {
-            e.readingDateTime =
-                DateTimeHelpers.convertToMidnightDate(e.readingDateTime);
-
-            return e;
-          })
-          .toList()
-          .where((element) =>
-              (element.readingDateTime.isAfter(
-                          DateTimeHelpers.convertToMidnightDate(
-                              dateRange.start)) ||
-                      DateTimeHelpers.convertToMidnightDate(dateRange.start)
-                          .isAtSameMomentAs(element.readingDateTime)) &&
-                  element.readingDateTime.isBefore(
-                      DateTimeHelpers.convertToMidnightDate(dateRange.end)) ||
-              DateTimeHelpers.convertToMidnightDate(dateRange.start)
-                  .isAtSameMomentAs(element.readingDateTime));
+      var filteredReadings = FilterWithCustomDates(dateRange, readings);
 
       if (filteredReadings.length == 0) {
         return null;
@@ -280,30 +464,14 @@ class BpRepository {
       var filteredReadings = <Bp>[];
       if (numberofDatesTillNow == null) {
         if (days == Days.All_time) {
-          numberofDatesTillNow = readings
-              .map((e) =>
-                  DateTimeHelpers.convertToMidnightDate(e.readingDateTime))
-              .toSet()
-              .toList()
-              .length;
+          numberofDatesTillNow = GetNumberofDaysfromFirstReading(readings);
           filteredReadings = readings;
         } else {
           return null;
         }
       } else {
-        filteredReadings = readings
-            .where((element) =>
-                (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
-                        .isAfter(DateTimeHelpers.convertToMidnightDate(
-                                DateTime.now())
-                            .subtract(Duration(days: numberofDatesTillNow!))) ||
-                    DateTimeHelpers.convertToMidnightDate(DateTime.now())
-                        .isAtSameMomentAs(element.readingDateTime)) &&
-                (DateTimeHelpers.convertToMidnightDate(element.readingDateTime)
-                        .isBefore(DateTime.now()) ||
-                    DateTimeHelpers.convertToMidnightDate(DateTime.now())
-                        .isAtSameMomentAs(element.readingDateTime)))
-            .toList();
+        filteredReadings =
+            FilterForSpecificDays(readings, numberofDatesTillNow);
       }
 
       if (filteredReadings.length == 0) {
@@ -312,37 +480,9 @@ class BpRepository {
 
 // Filter For The Time Range Of day
 
-      if (timeRangeOfDay == TimeRangeOfDay.AM) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
-                DayPeriod.am)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.PM) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDatePeriod(element.readingDateTime) ==
-                DayPeriod.pm)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.Evening) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
-                TimeRangeOfDay.Evening)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.Morning) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
-                TimeRangeOfDay.Morning)
-            .toList();
-      } else if (timeRangeOfDay == TimeRangeOfDay.Day) {
-        filteredReadings = filteredReadings
-            .where((element) =>
-                DateTimeHelpers.GetDayTimeRange(element.readingDateTime) ==
-                TimeRangeOfDay.Day)
-            .toList();
-      }
+      filteredReadings =
+          FilterForTimeRangeOfDay(filteredReadings, timeRangeOfDay);
+
       if (filteredReadings.length == 0) {
         return null;
       }
@@ -395,10 +535,10 @@ class BpRepository {
       avgreading.minDiastolic = minDiastolic.toInt();
       avgreading.minPulse = minPulse.toInt();
 
-avgreading.startDate=DateTime.now().subtract(Duration(days:numberofDatesTillNow));
-avgreading.endDate=DateTime.now();
-avgreading.numberofReadings= filteredReadings.length;
-
+      avgreading.startDate =
+          DateTime.now().subtract(Duration(days: numberofDatesTillNow));
+      avgreading.endDate = DateTime.now();
+      avgreading.numberofReadings = filteredReadings.length;
 
       return avgreading;
     }
@@ -488,16 +628,17 @@ avgreading.numberofReadings= filteredReadings.length;
     }
   }
 
-static BpStatus GetBpStatusFromReadings(int systolic , int diastolic , int pulse){
-var bp= new Bp();
-bp.systolic=systolic;
-bp.diastolic= diastolic;
-bp.pulse= pulse;
+  static BpStatus GetBpStatusFromReadings(
+      int systolic, int diastolic, int pulse) {
+    var bp = new Bp();
+    bp.systolic = systolic;
+    bp.diastolic = diastolic;
+    bp.pulse = pulse;
 
-var status= GetBpStatus(bp);
-return status;
+    var status = GetBpStatus(bp);
+    return status;
+  }
 
-}
   static BpStatus GetBpStatus(Bp bp) {
     if (_isHighBp(bp)) {
       if (_isVeryHighBp(bp)) {
