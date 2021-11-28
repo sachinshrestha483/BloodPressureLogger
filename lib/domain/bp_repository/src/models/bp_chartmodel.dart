@@ -1,3 +1,5 @@
+import 'package:mvp1/domain/user_repository/src/models/user_model.dart';
+import 'package:mvp1/domain/user_repository/user_repository.dart';
 class BpChartData{
 late int totalReadings;
 late double normalReadingPercentage;
@@ -13,4 +15,5 @@ late int hypotensionReadingCount;
 late  DateTime startDate;
 late DateTime enddate;
 late int numberOfDays;
+late User user;
 }

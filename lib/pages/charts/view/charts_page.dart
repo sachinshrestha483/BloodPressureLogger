@@ -46,6 +46,42 @@ class _ChartsPageState extends State<ChartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UserSpecificAppBar("Charts", context),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Bp Logger',
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+            ListTile(
+              title: const Text('Export and Send'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.of(context).pushNamed(
+                  '/exportandSend',
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Reminders'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.of(context).pushNamed(
+                  '/remindersPage',
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: [
           Filters(

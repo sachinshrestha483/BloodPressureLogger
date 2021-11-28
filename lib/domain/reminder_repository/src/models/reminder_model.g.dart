@@ -18,8 +18,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
     };
     return Reminder()
       ..name = fields[0] as String
-      ..time = fields[1] as DateTime
-      ..gender = fields[2] as bool
+      ..time = fields[15] as DateTime
       ..monday = fields[3] as bool
       ..tuesday = fields[4] as bool
       ..wednesday = fields[5] as bool
@@ -27,8 +26,9 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..friday = fields[7] as bool
       ..saturday = fields[8] as bool
       ..sunday = fields[9] as bool
-      ..userId = fields[10] as int
-      ..note = fields[11] as String;
+      ..userId = fields[12] as String
+      ..note = fields[11] as String
+      ..isactive = fields[14] as bool;
   }
 
   @override
@@ -37,10 +37,8 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(12)
       ..writeByte(0)
       ..write(obj.name)
-      ..writeByte(1)
+      ..writeByte(15)
       ..write(obj.time)
-      ..writeByte(2)
-      ..write(obj.gender)
       ..writeByte(3)
       ..write(obj.monday)
       ..writeByte(4)
@@ -55,10 +53,12 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..write(obj.saturday)
       ..writeByte(9)
       ..write(obj.sunday)
-      ..writeByte(10)
+      ..writeByte(12)
       ..write(obj.userId)
       ..writeByte(11)
-      ..write(obj.note);
+      ..write(obj.note)
+      ..writeByte(14)
+      ..write(obj.isactive);
   }
 
   @override

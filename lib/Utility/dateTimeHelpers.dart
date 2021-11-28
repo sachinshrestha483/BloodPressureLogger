@@ -46,6 +46,9 @@ static String GetShortDate(DateTime date){
 return "${date.day}/${date.month}/${date.year}";
 }
 
+static String GetShortTime(DateTime date){
+  return "${date.hour}:${date.minute}";
+}
 
 
 

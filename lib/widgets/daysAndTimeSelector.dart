@@ -35,7 +35,7 @@ class _DaysandTimeSelectorState extends State<DaysandTimeSelector> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(4.0),
           child: DropdownButton<Days>(
               value: days,
               onChanged: (newValue) {
@@ -55,7 +55,7 @@ class _DaysandTimeSelectorState extends State<DaysandTimeSelector> {
               }).toList()),
         ),
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(4.0),
           child: DropdownButton<TimeRangeOfDay>(
               value: timeRange,
               onChanged: (newValue) {

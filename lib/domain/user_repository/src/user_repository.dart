@@ -1,12 +1,10 @@
 import 'dart:core';
-
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mvp1/Utility/Uid.dart';
 import 'package:mvp1/domain/user_repository/src/enums/gender.dart';
 import 'package:mvp1/providers/Boxes.dart';
 import 'package:mvp1/providers/userProvider.dart';
-
 import 'models/user_model.dart';
 
 class UserRepository {
@@ -27,31 +25,25 @@ class UserRepository {
     user.save();
   }
 
-  static String GetGenderDisplayString(Gender gender){
+  static String GetGenderDisplayString(Gender gender) {
+    switch (gender) {
+      case Gender.male:
+        return "Male";
 
-switch(gender){
+      case Gender.female:
+        return "Female";
 
-case Gender.male:
-  return "Male";
-
-case Gender.female:
-   return "Female"; 
-
-case Gender.others:
-    return "Others";
-
-
-}
-
+      case Gender.others:
+        return "Others";
+    }
   }
 
-
-
-  static setSelectedProfile(String id,BuildContext context) {
+  static setSelectedProfile(String id, BuildContext context) {
     var configBox = Hive.box<String>(Boxes.ConfigBox);
-      setSelectedProfleProvider(id,context);
-      configBox.put(Keys.SelectedUser, id);
+    setSelectedProfleProvider(id, context);
+    configBox.put(Keys.SelectedUser, id);
   }
+
 // returns the key
   static String? getSelectedProfile() {
     var configBox = Hive.box<String>(Boxes.ConfigBox);
