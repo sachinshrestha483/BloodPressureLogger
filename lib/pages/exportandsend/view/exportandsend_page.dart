@@ -6,7 +6,6 @@ import 'package:mvp1/domain/bp_repository/src/bp_repository.dart';
 import 'package:mvp1/domain/bp_repository/src/models/bp_chartmodel.dart';
 import 'package:mvp1/domain/bp_repository/src/models/bp_reportmodel.dart';
 import 'package:mvp1/domain/bp_repository/src/models/models.dart';
-import 'package:mvp1/domain/reminder_repository/src/notificationApi.dart';
 import 'package:mvp1/domain/reporting/enums/TimeRangeOfDay.dart';
 import 'package:mvp1/domain/reporting/enums/days.dart';
 import 'package:mvp1/domain/reporting/pdf_api.dart';
@@ -122,7 +121,6 @@ class _ExportandSendState extends State<ExportandSend> {
                             SizedBox(
                               height: 12,
                             ),
-                            BuildPrimaryButton(() => {}, Text("Export Csv")),
                           ],
                         )
                       : Text("No Data in Given Date Range");

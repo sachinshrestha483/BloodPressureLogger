@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mvp1/domain/bp_repository/src/models/bp_model.dart';
-import 'package:mvp1/domain/reminder_repository/src/models/reminder_model.dart';
 import 'package:mvp1/pages/readings/readings.dart';
 import 'package:mvp1/providers/Boxes.dart';
 import 'package:mvp1/providers/userProvider.dart';
 import 'package:mvp1/route_generator.dart';
 import 'domain/user_repository/user_repository.dart';
 import 'domain/bp_repository/bp_repository.dart';
-import 'domain/reminder_repository/reminder_repository.dart';
 import 'pages/home/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid_type/uuid_type.dart';
@@ -19,9 +17,7 @@ Future main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(BpAdapter());
-  Hive.registerAdapter(ReminderAdapter());
   await Hive.openBox<User>('users');
-  await Hive.openBox<Reminder>('reminders');
   await Hive.openBox<Bp>('bpreadings');
   await Hive.openBox<String>(Boxes.ConfigBox);
 

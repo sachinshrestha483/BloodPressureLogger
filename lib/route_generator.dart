@@ -4,8 +4,6 @@ import 'package:mvp1/pages/analysis/view/analysis_page.dart';
 import 'package:mvp1/pages/exportandsend/exportandsend.dart';
 import 'package:mvp1/pages/home/home.dart';
 import 'package:mvp1/pages/readings/readings.dart';
-import 'package:mvp1/pages/reminders/views/reminders_page.dart';
-
 import 'domain/bp_repository/src/models/models.dart';
 import 'main.dart';
 
@@ -40,9 +38,6 @@ class RouteGenerator {
 
       case '/exportandSend':
         return MaterialPageRoute(builder: (_) => ExportandSend());
-
-      case '/remindersPage':
-        return MaterialPageRoute(builder: (_) => RemindersPage());
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

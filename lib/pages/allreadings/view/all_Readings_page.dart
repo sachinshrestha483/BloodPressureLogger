@@ -29,7 +29,33 @@ class _AllReadingsPageState extends State<AllReadingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UserSpecificAppBar("All Readings", context),
-  
+   drawer: 
+      Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Bp Logger',
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+            ListTile(
+              title: const Text('Export and Send'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.of(context).pushNamed(
+                  '/exportandSend',
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Pallete.LightGreen,
         onPressed: () {

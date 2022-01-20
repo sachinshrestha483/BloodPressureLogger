@@ -46,7 +46,8 @@ class _ChartsPageState extends State<ChartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UserSpecificAppBar("Charts", context),
-      drawer: Drawer(
+      drawer: 
+      Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -66,16 +67,6 @@ class _ChartsPageState extends State<ChartsPage> {
                 // ...
                 Navigator.of(context).pushNamed(
                   '/exportandSend',
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Reminders'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.of(context).pushNamed(
-                  '/remindersPage',
                 );
               },
             ),

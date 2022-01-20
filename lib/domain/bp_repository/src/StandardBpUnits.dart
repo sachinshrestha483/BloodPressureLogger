@@ -5,8 +5,10 @@ class StandardBpReading{
   static int MinimumDiastolic = 80;
   static int MinimumPulse=12 ;
   static int MaximumPulse=110;
-  static int MinPulse=60;
+  static int MinPulse=12;
   static int MaxPulse=100;
+  // static int MinPulse=60;
+  // static int MaxPulse=100;
   static int VeryHighSystolicMinima=180;
   static int VeryHighDiastolicMinima=120;
 
